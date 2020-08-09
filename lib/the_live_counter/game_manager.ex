@@ -11,6 +11,7 @@ defmodule TheLiveCounter.GameManager do
       )
 
     game_pid
+    |> game_detail()
   end
 
   def count do
@@ -24,5 +25,17 @@ defmodule TheLiveCounter.GameManager do
     |> Agent.get(fn game -> game end)
   end
 
+  def find_game(game_id) do
+    TheLiveCounter.DynamicSupervisor
+    |> DynamicSupervisor.which_children()
+    |> obtain_games
+    |> Enum.find(fn %Game{id: id} -> id == game_id end)
+  end
+
   defp count_workers(%{workers: workers} = _childs), do: workers
+
+  defp obtain_games(supervised_processes) do
+    for {_, process, _, _} <- supervised_processes,
+        do: game_detail(process)
+  end
 end
