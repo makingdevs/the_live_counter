@@ -15,8 +15,10 @@ defmodule TheLiveCounter.GameManagerTest do
   end
 
   test "get game detail" do
-    game_pid = GameManager.new()
-    game = GameManager.game_detail(game_pid)
+    game =
+      GameManager.new()
+      |> GameManager.game_detail()
+
     assert game.counter == 0
     assert game.id > 0
   end
