@@ -22,4 +22,11 @@ defmodule TheLiveCounter.GameManagerTest do
     assert game.counter == 0
     assert game.id > 0
   end
+
+  test "find a game" do
+    game = GameManager.new()
+    game_found = GameManager.find_game(game.id)
+
+    assert game.id == game_found.id
+  end
 end
