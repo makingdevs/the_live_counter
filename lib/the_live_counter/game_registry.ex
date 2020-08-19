@@ -1,4 +1,4 @@
-defmodule TheLiveCounter.GameManager do
+defmodule TheLiveCounter.GameRegistry do
   alias TheLiveCounter.Game
   use GenServer
 
