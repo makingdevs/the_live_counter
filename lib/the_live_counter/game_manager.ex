@@ -1,41 +1,36 @@
 defmodule TheLiveCounter.GameManager do
   alias TheLiveCounter.Game
+  use GenServer
 
   @supervisor TheLiveCounter.DynamicSupervisor
 
-  def new do
-    {:ok, game_pid} =
-      DynamicSupervisor.start_child(
-        @supervisor,
-        {Agent, fn -> Game.create() end}
-      )
+  ## Client API
 
-    game_pid
-    |> game_detail()
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def count do
-    @supervisor
-    |> DynamicSupervisor.count_children()
-    |> count_workers()
+  def create do
+    GenServer.call(__MODULE__, {:create})
   end
 
-  def game_detail(game_pid) do
-    game_pid
-    |> Agent.get(fn game -> game end)
+  def lookup(id) do
+    GenServer.call(__MODULE__, {:lookup, id})
   end
 
-  def find_game(game_id) do
-    TheLiveCounter.DynamicSupervisor
-    |> DynamicSupervisor.which_children()
-    |> obtain_games
-    |> Enum.find(fn %Game{id: id} -> id == game_id end)
+  def count() do
+    GenServer.call(__MODULE__, {:count})
+  end
+
+  ##  GenServer Callbacks
+
+  def init(_args) do
+    {:ok, []}
+  end
+
+  def handle_call({:count}, _from, []) do
+    {:reply, 0, []}
   end
 
   defp count_workers(%{workers: workers} = _childs), do: workers
-
-  defp obtain_games(supervised_processes) do
-    for {_, process, _, _} <- supervised_processes,
-        do: game_detail(process)
-  end
 end
