@@ -28,8 +28,17 @@ defmodule TheLiveCounter.GameRegistry do
     {:ok, []}
   end
 
-  def handle_call({:count}, _from, []) do
+  def handle_call({:create}, _from, []) do
     {:reply, 0, []}
+  end
+
+  def handle_call({:count}, _from, []) do
+    counter =
+      @supervisor
+      |> DynamicSupervisor.count_children()
+      |> count_workers()
+
+    {:reply, counter, []}
   end
 
   defp count_workers(%{workers: workers} = _childs), do: workers
