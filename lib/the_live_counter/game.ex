@@ -1,7 +1,9 @@
 defmodule TheLiveCounter.Game do
   alias __MODULE__
   use Agent, restart: :temporary
-  defstruct counter: 0, id: 0
+  defstruct counter: 0, id: 0, name: ""
+
+  ##  API Client
 
   def start_link(_opts) do
     Agent.start_link(fn -> create() end)
