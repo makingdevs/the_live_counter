@@ -3,7 +3,8 @@ defmodule TheLiveCounter.GameTest do
   use ExUnit.Case, async: true
 
   setup do
-    pid_game = start_supervised!(Game)
+    ## Starts with :via tuple
+    pid_game = start_supervised!({Game, name: {:via, Registry, {Registry.ViaGame, "game_name"}}})
     %{pid_game: pid_game}
   end
 
