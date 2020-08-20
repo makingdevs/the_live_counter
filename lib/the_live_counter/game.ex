@@ -5,16 +5,21 @@ defmodule TheLiveCounter.Game do
 
   ##  API Client
 
-  def start_link(_opts) do
-    Agent.start_link(fn -> create() end)
+  def start_link(opts \\ []) do
+    [name: {:via, _, {_, game_name}}] = opts
+    Agent.start_link(fn -> create(game_name) end, opts)
   end
 
-  defp create() do
-    %Game{id: System.unique_integer([:positive])}
+  defp create(name) do
+    %Game{id: System.unique_integer([:positive]), name: name}
   end
 
   def get_counter(pid_game) do
     Agent.get(pid_game, fn %Game{counter: counter} -> counter end)
+  end
+
+  def get(pid_game) do
+    Agent.get(pid_game, & &1)
   end
 
   def increase_counter(pid_game) do
