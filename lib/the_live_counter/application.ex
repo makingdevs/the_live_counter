@@ -8,7 +8,9 @@ defmodule TheLiveCounter.Application do
       TheLiveCounterWeb.Telemetry,
       {Phoenix.PubSub, name: TheLiveCounter.PubSub},
       TheLiveCounterWeb.Endpoint,
-      {DynamicSupervisor, strategy: :one_for_one, name: TheLiveCounter.DynamicSupervisor}
+      {DynamicSupervisor, strategy: :one_for_one, name: TheLiveCounter.DynamicSupervisor},
+      TheLiveCounter.GameRegistry,
+      {Registry, keys: :unique, name: Registry.ViaGame}
     ]
 
     opts = [strategy: :one_for_one, name: TheLiveCounter.Supervisor]
