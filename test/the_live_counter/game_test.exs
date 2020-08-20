@@ -3,14 +3,13 @@ defmodule TheLiveCounter.GameTest do
   use ExUnit.Case, async: true
 
   setup do
-    ## Starts with :via tuple
-    pid_game = start_supervised!({Game, name: {:via, Registry, {Registry.ViaGame, "game_name"}}})
+    pid_game = start_supervised!({Game, name: "game_name"})
     %{pid_game: pid_game}
   end
 
-  test "starts a new game", %{pid_game: pid_game} do
-    assert Game.get_counter(pid_game) == 0
-    Game.increase_counter(pid_game)
-    assert Game.get_counter(pid_game) == 1
+  test "starts a new game", %{pid_game: _pid_game} do
+    assert Game.get_counter("game_name") == 0
+    Game.increase_counter("game_name")
+    assert Game.get_counter("game_name") == 1
   end
 end
