@@ -6,16 +6,19 @@ defmodule TheLiveCounter.GameRegistry do
 
   ## Client API
 
-  def start_link(_opts) do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  def start_link(opts \\ []) do
+    GenServer.start_link(__MODULE__, [], [name: __MODULE__] ++ opts)
   end
 
   def create do
     GenServer.call(__MODULE__, {:create})
   end
 
-  def lookup(id) do
-    GenServer.call(__MODULE__, {:lookup, id})
+  def lookup(name) do
+    case Registry.lookup(Registry.ViaGame, name) do
+      [{pid_game, _}] -> pid_game
+      [] -> nil
+    end
   end
 
   def count() do
