@@ -32,8 +32,9 @@ defmodule TheLiveCounter.GameRegistry do
   end
 
   def handle_call({:create}, _from, []) do
-    {:ok, game_pid} = DynamicSupervisor.start_child(@supervisor, {Game, name: via_tuple()})
-    {:reply, game_pid, []}
+    name = random_name()
+    {:ok, game_pid} = DynamicSupervisor.start_child(@supervisor, {Game, name: name})
+    {:reply, {:ok, name, game_pid}, []}
   end
 
   def handle_call({:count}, _from, []) do
@@ -51,9 +52,5 @@ defmodule TheLiveCounter.GameRegistry do
     ?a..?z
     |> Enum.take_random(6)
     |> List.to_string()
-  end
-
-  defp via_tuple() do
-    {:via, Registry, {Registry.ViaGame, random_name()}}
   end
 end

@@ -4,8 +4,9 @@ defmodule TheLiveCounter.GameRegistryTest do
   use ExUnit.Case, async: true
 
   test "add a new game" do
-    game = GameRegistry.create()
-    assert game
+    {:ok, name, pid} = GameRegistry.create()
+    assert name
+    assert pid
   end
 
   test "count the games" do
@@ -16,11 +17,11 @@ defmodule TheLiveCounter.GameRegistryTest do
   end
 
   test "find a game" do
-    game_pid = GameRegistry.create()
-    %Game{name: name_created} = Game.get(game_pid)
-    game_found = GameRegistry.lookup(name_created)
-    %Game{name: name_founded} = Game.get(game_found)
+    {:ok, name, game_pid} = GameRegistry.create()
+    game_pid_found = GameRegistry.lookup(name)
+    %Game{name: name_founded} = Game.get(name)
 
-    assert name_created == name_founded
+    assert game_pid == game_pid_found
+    assert name == name_founded
   end
 end
